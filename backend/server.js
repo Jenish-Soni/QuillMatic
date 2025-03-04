@@ -10,6 +10,8 @@ const { router: authRoutes, verifyToken } = require("./routes/authRoutes");
 const jwt = require('jsonwebtoken');
 const Document = require('./model/document');
 const documentRoutes = require('./routes/documentRoutes');
+const cookieParser = require('cookie-parser');
+const grammarRoutes = require('./routes/grammarRoutes');
 
 const app = express();
 const server = http.createServer(app);
@@ -38,10 +40,15 @@ const io = new Server(server, {
 });
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use("/auth", authRoutes);
 
 // Register document routes
 app.use('/api/documents', documentRoutes);
+
+// Register the grammar routes
+app.use('/api/grammar', grammarRoutes);
 
 // Socket.IO middleware for authentication
 io.use(async (socket, next) => {

@@ -21,6 +21,7 @@ const Editor = () => {
   const [isChecking, setIsChecking] = useState(false);
   const grammarCheckTimeout = useRef(null);
   const navigate = useNavigate();
+  const [isSuggestionsVisible, setIsSuggestionsVisible] = useState(true);
 
   // Memoize saveContent function
   const saveContent = useCallback(async (contentToSave) => {
@@ -244,6 +245,11 @@ const Editor = () => {
     'link', 'image'
   ];
 
+  // Add a function to handle closing
+  const handleCloseSuggestions = () => {
+    setIsSuggestionsVisible(false);
+  };
+
   if (loading) {
     return (
       <div className="editor-wrapper">
@@ -282,9 +288,10 @@ const Editor = () => {
       </div>
 
       {/* Show loading state in grammar suggestions */}
-      <div className={`grammar-suggestions ${grammarSuggestions.length > 0 || isChecking ? 'active' : ''}`}>
+      <div className={`grammar-suggestions ${(grammarSuggestions.length > 0 || isChecking) && isSuggestionsVisible ? 'active' : ''}`}>
         <h3>
           Grammar Suggestions
+          <button className="close-suggestions" onClick={handleCloseSuggestions}>×</button>
           {isChecking && <span className="checking-indicator">Checking...</span>}
         </h3>
         {isChecking ? (

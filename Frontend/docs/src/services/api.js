@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Signup from '../components/Auth/Signup';
 
 const api = axios.create({
     baseURL: 'http://localhost:5000',
@@ -15,7 +16,26 @@ api.interceptors.request.use((config) => {
 });
 
 export const authService = {
+<<<<<<< HEAD
     login: async (username, password) => {
+=======
+    setAuthHeader(token) {
+        if (token) {
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        }
+    },
+
+    removeAuthHeader() {
+        delete api.defaults.headers.common['Authorization'];
+    },
+
+    async signup(username, password) {
+        const response = await api.post('/auth/register', { username, password });
+        return response.data;
+    },
+
+    async login(username, password) {
+>>>>>>> 462a6d4 (Fixed Signup)
         const response = await api.post('/auth/login', { username, password });
         return response.data;
     },

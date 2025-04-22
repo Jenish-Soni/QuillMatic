@@ -297,4 +297,30 @@
   0% { opacity: 0.6; }
   50% { opacity: 1; }
   100% { opacity: 0.6; }
+}
+
+/* Add these styles to your existing Editor.css */
+.close-suggestions {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.5rem;
+  line-height: 1;
+  margin-left: auto;
+}
+
+.close-suggestions:hover {
+  color: #1a1a1a;
+}
+
+/* Update the existing h3 styles in grammar-suggestions */
+.grammar-suggestions h3 {
+  margin: 0 0 1rem 0;
+  color: #2563eb;
+  font-size: 1.1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 } 

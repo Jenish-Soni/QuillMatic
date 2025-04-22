@@ -27,6 +27,17 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
+
+
+
+  const signup = async(username,password)=>{
+    try{
+      const response = await authService.signup(username,password);
+      return(response.data);
+    }catch(e){
+      console.log(e);  // Should throw the error instead of just logging
+    }
+  }
   const login = async (email, password) => {
     const response = await authService.login(email, password);
     setToken(response.token); // This may not be necessary if using cookies
@@ -40,6 +51,7 @@ export const AuthProvider = ({ children }) => {
   const value = {
     token,
     loading,
+    signup,
     login,
     logout,
     isAuthenticated: !!token // Check if user is authenticated

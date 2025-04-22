@@ -10,7 +10,7 @@ export const  initializeSocket = (token) => {
     return null;
   }
 
-  console.log('Initializing socket with token:', token); // Debug log
+  // console.log('Initializing socket with token:', token); // Debug log
 
   socket = io('http://localhost:5000', {
     auth: { token }, // Pass the token in auth object

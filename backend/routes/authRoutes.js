@@ -111,8 +111,19 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-router.get('/check-auth', verifyToken, (req, res) => {
-    res.json({ token: req.token }); // Send back the token if valid
+router.get('/check-auth', verifyToken, async (req, res) => {
+  try {
+    // If verifyToken middleware passes, user is authenticated
+    res.json({ 
+      authenticated: true,
+      token: req.token // Send back the token if you want to refresh it
+    });
+  } catch (error) {
+    res.status(401).json({ 
+      authenticated: false,
+      message: 'Invalid token' 
+    });
+  }
 });
 
 module.exports = { router, verifyToken };

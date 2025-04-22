@@ -8,17 +8,16 @@ const api = axios.create({
 
 // Add request interceptor to include token if needed
 api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token'); // If using local storage
+    const token = localStorage.getItem('token');
     if (token) {
-        config.headers.Authorization = `Bearer ${token}`; // Include token in headers
+        config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
+}, (error) => {
+    return Promise.reject(error);
 });
 
 export const authService = {
-<<<<<<< HEAD
-    login: async (username, password) => {
-=======
     setAuthHeader(token) {
         if (token) {
             api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -35,17 +34,22 @@ export const authService = {
     },
 
     async login(username, password) {
->>>>>>> 462a6d4 (Fixed Signup)
         const response = await api.post('/auth/login', { username, password });
         return response.data;
     },
-    signup: async (username, password) => {
-        const response = await api.post('/auth/register', { username, password });
-        return response.data;
-    },
-    checkAuth: async () => {
-        const response = await api.get('/auth/check-auth', { withCredentials: true }); // Include credentials
-        return response.data;
+
+    async checkAuth() {
+        try {
+            const response = await api.get('/auth/check-auth');
+            return response.data;
+        } catch (error) {
+            if (error.response?.status === 403) {
+                // Handle forbidden error
+                localStorage.removeItem('token');
+                throw new Error('Authentication failed');
+            }
+            throw error;
+        }
     }
 };
 

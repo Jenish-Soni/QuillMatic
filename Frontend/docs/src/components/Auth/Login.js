@@ -26,12 +26,12 @@ const Login = () => {
     setLoading(true);
 
     try {
-      await login(formData.email, formData.password);
-      console.log('Login successful, navigating to documents');
-      navigate('/documents');
+      const response = await login(formData.email, formData.password);
+      if (response.token) {
+        navigate('/documents');
+      }
     } catch (err) {
-      console.error('Login error:', err);
-      setError(err.response?.data?.error || err.message || 'Failed to login');
+      setError(err.response?.data?.error || 'Failed to login');
     } finally {
       setLoading(false);
     }

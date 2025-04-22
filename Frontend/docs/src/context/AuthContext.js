@@ -8,17 +8,30 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(() => localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if the user is logged in by checking the cookie
     const checkAuth = async () => {
+      const storedToken = localStorage.getItem('token');
+      
+      if (!storedToken) {
+        setLoading(false);
+        return;
+      }
+
       try {
-        const response = await authService.checkAuth(); // Create this endpoint to verify token
-        setToken(response.token); // Set token if valid
+        authService.setAuthHeader(storedToken);
+        const response = await authService.checkAuth();
+        if (response.token) {
+          setToken(response.token);
+          localStorage.setItem('token', response.token);
+        }
       } catch (error) {
         console.error('Not authenticated:', error);
+        // Clear invalid token
+        setToken(null);
+        localStorage.removeItem('token');
       } finally {
         setLoading(false);
       }
@@ -26,9 +39,6 @@ export const AuthProvider = ({ children }) => {
 
     checkAuth();
   }, []);
-
-
-
 
   const signup = async(username,password)=>{
     try{
@@ -39,13 +49,24 @@ export const AuthProvider = ({ children }) => {
     }
   }
   const login = async (email, password) => {
-    const response = await authService.login(email, password);
-    setToken(response.token); // This may not be necessary if using cookies
+    try {
+      const response = await authService.login(email, password);
+      if (response.token) {
+        localStorage.setItem('token', response.token);
+        setToken(response.token);
+        authService.setAuthHeader(response.token);
+      }
+      return response;
+    } catch (error) {
+      console.error('Login failed:', error);
+      throw error;
+    }
   };
 
   const logout = () => {
-    // Clear token and redirect
+    localStorage.removeItem('token');
     setToken(null);
+    authService.removeAuthHeader();
   };
 
   const value = {
